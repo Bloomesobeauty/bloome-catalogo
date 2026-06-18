@@ -126,7 +126,7 @@
         .img-container { 
             position: relative; width: 100%; aspect-ratio: 1 / 1; 
             border-radius: 12px; overflow: hidden; background: #fff;
-            touch-action: pan-y; /* Permite scroll vertical normal pero intercepta horizontal */
+            touch-action: pan-y;
         }
         .product-img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.2s ease, opacity 0.15s; }
         .carousel-btn { 
@@ -139,7 +139,7 @@
         .carousel-btn.next { right: 6px; }
         .card:hover .carousel-btn { display: flex; }
 
-        /* Indicador de puntitos discretos */
+        /* Indicador de puntitos */
         .carousel-dots { position: absolute; bottom: 8px; left: 0; width: 100%; display: flex; justify-content: center; gap: 4px; z-index: 3; pointer-events: none; }
         .dot { width: 5px; height: 5px; background: rgba(0,0,0,0.15); border-radius: 50%; transition: background 0.2s; }
         .dot.active { background: var(--rosa-fuerte); width: 12px; border-radius: 3px; }
@@ -227,31 +227,39 @@
         const api = 'https://sheetdb.io/api/v1/f7a2fgi064wzu';
         let products = [];
         
-        // Estado Global de Filtros e Interacción
+        // Estado Global
         let filterCategory = '';
         let filterSubCategory = '';
         let filterBrand = '';
         let currentPage = 1;
-        const itemsPerPage = 12; // Muestra un número par perfecto para cuadrícula móvil dual
+        const itemsPerPage = 12;
 
         const getVal = (item, key) => item[key] || item[key + ' '] || '';
 
-       async function init() {
+        // 👑 FUNCIÓN REPARADA CON ORDENAMIENTO BLINDADO
+        async function init() {
             try {
                 const res = await fetch(api);
-                products = await res.json();
+                const rawData = await res.json();
                 
-                // 👑 MÁGIA: Ordenar automáticamente los productos por Categoría por defecto
-                products.sort((a, b) => {
-                    const catA = getVal(a, 'Categoría').trim().toLowerCase();
-                    const catB = getVal(b, 'Categoría').trim().toLowerCase();
-                    return catA.localeCompare(catB);
-                });
+                if (Array.isArray(rawData)) {
+                    products = rawData;
+                    
+                    // Ordena alfabéticamente por la columna 'Categoría' desde el inicio
+                    products.sort((a, b) => {
+                        const catA = (getVal(a, 'Categoría') || '').trim().toLowerCase();
+                        const catB = (getVal(b, 'Categoría') || '').trim().toLowerCase();
+                        return catA.localeCompare(catB);
+                    });
+                } else {
+                    products = [];
+                }
 
                 buildBrandDropdown();
                 buildAccordionMenu();
                 applyFilters();
             } catch (error) {
+                console.error(error);
                 document.getElementById('catalog').innerText = "Error cargando productos. Por favor reintenta.";
             }
         }
@@ -296,7 +304,7 @@
                 </div>
             `;
 
-            cats.forEach((cat, index) => {
+            cats.forEach((cat) => {
                 const subs = [...new Set(products.filter(p => getVal(p, 'Categoría').split(',').map(s => s.trim()).includes(cat)).flatMap(p => getVal(p, 'SubCategoria').split(',').map(s => s.trim())))].filter(v => v).sort();
                 
                 html += `
@@ -325,7 +333,6 @@
                 icon.innerText = isVisible ? '+' : '−';
                 if(isVisible) return; 
             }
-            // Si no tiene subcategorías, filtra directamente al tocar la principal
             if (!content || content.children.length <= 1) {
                 selectCategory(cat, '');
             }
@@ -339,13 +346,13 @@
             toggleDrawer(false);
         }
 
-        // --- 🔍 LOGICA DE BÚSQUEDA PREDICTIVA ---
+        // --- 🔍 BUSQUEDA PREDICTIVA ---
         function handlePredictiveSearch() {
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
             const box = document.getElementById('predictiveBox');
             if (!query) { box.innerHTML = ''; return; }
 
-            const filtered = products.filter(p => getVal(p, 'Nombre').toLowerCase().includes(query)).slice(0, 6); // Max 6 resultados para agilidad visual
+            const filtered = products.filter(p => getVal(p, 'Nombre').toLowerCase().includes(query)).slice(0, 6);
             
             if (filtered.length === 0) {
                 box.innerHTML = '<div style="padding:15px; color:#757575; font-size:0.9em; text-align:center;">No encontramos coincidencias...</div>';
@@ -371,7 +378,7 @@
             openModal(index);
         }
 
-        // --- ⚙️ APLICACIÓN CENTRAL DE FILTROS & PAGINACIÓN ---
+        // --- ⚙️ APLICACIÓN CENTRAL DE FILTROS ---
         function applyFilters() {
             const filtered = products.filter(p => {
                 const matchBrand = !filterBrand || getVal(p, 'Marca').split(',').map(s => s.trim()).includes(filterBrand);
@@ -380,14 +387,12 @@
                 return matchBrand && matchCat && matchSub;
             });
 
-            // Actualizar etiqueta del título superior
             let label = "Todos los Productos";
             if (filterCategory) label = filterCategory;
             if (filterSubCategory) label += ` › ${filterSubCategory}`;
             if (filterBrand) label += ` (${filterBrand})`;
             document.getElementById('activeFilterLabel').innerText = label;
 
-            // Renderizar trozo paginado
             const totalItems = filtered.length;
             const start = (currentPage - 1) * itemsPerPage;
             const end = start + itemsPerPage;
@@ -397,7 +402,6 @@
             renderPaginationControls(totalItems);
         }
 
-        // --- 📦 PIPELINE DE CORRECCIÓN VISUAL Y CARRUSEL ---
         function renderCatalog(data) {
             const catalog = document.getElementById('catalog');
             if (data.length === 0) {
@@ -409,8 +413,6 @@
                 const globalIndex = products.indexOf(item);
                 const imgs = [getVal(item, 'Imagen 1'), getVal(item, 'Imagen 2'), getVal(item, 'Imagen 3')].filter(i => i && i.trim() !== "");
                 const arrowsDisplay = imgs.length > 1 ? 'style="display: flex;"' : 'style="display: none;"';
-
-                // Generación de puntitos de carrusel
                 const dotsHtml = imgs.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}"></span>`).join('');
 
                 return `
@@ -436,7 +438,6 @@
             }).join('');
         }
 
-        // Control de transición del carrusel (Flechas y Toque)
         function changeImage(event, button, direction) {
             if(event) event.stopPropagation();
             const container = button.parentElement;
@@ -453,46 +454,36 @@
                 img.src = images[currentIndex];
                 img.dataset.index = currentIndex;
                 img.style.opacity = 1;
-                
-                // Actualizar punto activo
                 dots.forEach((dot, idx) => dot.classList.toggle('active', idx === currentIndex));
             }, 100);
         }
 
-        // --- INTERCEPCIÓN TÁCTIL (SWIPE GESTURE) ---
         let touchXStart = 0;
-        function cardTouchStart(e, container) {
-            touchXStart = e.touches[0].clientX;
-        }
+        function cardTouchStart(e, container) { touchXStart = e.touches[0].clientX; }
         function cardTouchEnd(e, container) {
             const touchXEnd = e.changedTouches[0].clientX;
             const diffX = touchXStart - touchXEnd;
             const prevBtn = container.querySelector('.carousel-btn.prev');
             const nextBtn = container.querySelector('.carousel-btn.next');
-
-            if (Math.abs(diffX) > 40) { // Sensibilidad del deslizamiento
+            if (Math.abs(diffX) > 40) {
                 if (diffX > 0 && nextBtn.style.display !== 'none') changeImage(null, nextBtn, 1);
                 else if (diffX < 0 && prevBtn.style.display !== 'none') changeImage(null, prevBtn, -1);
             }
         }
 
-        // --- CONTROLES DE LA PAGINACIÓN ---
         function renderPaginationControls(totalItems) {
             const container = document.getElementById('pagination');
             const totalPages = Math.ceil(totalItems / itemsPerPage);
             if (totalPages <= 1) { container.innerHTML = ''; return; }
 
             let html = `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(-1)">◀</button>`;
-            
             for(let i = 1; i <= totalPages; i++) {
-                // Optimización simple para no renderizar 50 botones si crece mucho la base
                 if(i === 1 || i === totalPages || Math.abs(currentPage - i) <= 1) {
                     html += `<button class="page-btn ${currentPage === i ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
                 } else if (i === currentPage - 2 || i === currentPage + 2) {
                     html += `<span style="color:var(--rosa-medio)">...</span>`;
                 }
             }
-
             html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(1)">▶</button>`;
             container.innerHTML = html;
         }
@@ -502,21 +493,18 @@
             applyFilters();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
         function goToPage(pageNum) {
             currentPage = pageNum;
             applyFilters();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // --- 🎭 MODAL COMPLEMENTARIO ---
         function openModal(index) {
             const item = products[index];
             const modalBody = document.getElementById('modal-body');
             const imgs = [getVal(item, 'Imagen 1'), getVal(item, 'Imagen 2'), getVal(item, 'Imagen 3')].filter(i => i && i.trim() !== "");
             const arrowsDisplay = imgs.length > 1 ? 'style="display: flex;"' : 'style="display: none;"';
             const dotsHtml = imgs.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}"></span>`).join('');
-
             const descSheet = getVal(item, 'Descripción') || getVal(item, 'Descripcion');
             const descFinal = descSheet && descSheet.trim() !== "" ? descSheet : "Este grandioso producto no cuenta con descripción detallada todavía.";
 
@@ -528,9 +516,7 @@
                     <button class="carousel-btn next" ${arrowsDisplay} onclick="changeImage(event, this, 1)">&#10095;</button>
                     <div class="carousel-dots">${dotsHtml}</div>
                 </div>
-                <div style="font-size: 0.75em; color: var(--rosa-fuerte); text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 4px;">
-                    ${getVal(item, 'Marca')}
-                </div>
+                <div style="font-size: 0.75em; color: var(--rosa-fuerte); text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 4px;">${getVal(item, 'Marca')}</div>
                 <h2 style="color: var(--texto); margin: 0 0 8px 0; font-size: 1.3em; font-weight:600;">${getVal(item, 'Nombre')}</h2>
                 <div class="price" style="font-size: 1.25em; margin-bottom: 10px;">${getVal(item, 'Precio Venta')}</div>
                 <div style="margin-bottom: 15px;">${getVal(item, 'Tonos Disponibles').split(',').map(t => t.trim() ? `<span class="tono-tag" style="font-size:0.75em">${t.trim()}</span>` : '').join('')}</div>
@@ -539,10 +525,8 @@
             `;
             document.getElementById('product-modal').classList.add('active');
         }
-
         function closeModal() { document.getElementById('product-modal').classList.remove('active'); }
 
-        // Inicializar la maquinaria
         init();
     </script>
 </body>
