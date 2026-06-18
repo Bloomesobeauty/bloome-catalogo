@@ -236,10 +236,18 @@
 
         const getVal = (item, key) => item[key] || item[key + ' '] || '';
 
-        async function init() {
+       async function init() {
             try {
                 const res = await fetch(api);
                 products = await res.json();
+                
+                // 👑 MÁGIA: Ordenar automáticamente los productos por Categoría por defecto
+                products.sort((a, b) => {
+                    const catA = getVal(a, 'Categoría').trim().toLowerCase();
+                    const catB = getVal(b, 'Categoría').trim().toLowerCase();
+                    return catA.localeCompare(catB);
+                });
+
                 buildBrandDropdown();
                 buildAccordionMenu();
                 applyFilters();
