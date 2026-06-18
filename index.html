@@ -2,114 +2,46 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloome Beauty | Catálogo</title>
     <style>
         /* --- VARIABLES DE COLOR ORIGINALES INTACTAS --- */
         :root { --rosa-claro: #fdf4f5; --rosa-fuerte: #c2185b; --rosa-medio: #f8bbd0; --texto: #4a4a4a; }
-        body { background-color: var(--rosa-claro); color: var(--texto); font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; }
+        body { background-color: var(--rosa-claro); color: var(--texto); font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: row; }
+        
         .sidebar { width: 300px; padding: 30px; border-right: 1px solid var(--rosa-medio); background: white; height: 100vh; position: sticky; top: 0; box-sizing: border-box; overflow-y: auto; }
         .logo { text-align: center; margin-bottom: 20px; }
         .logo img { width: 130px; height: 130px; border-radius: 50%; border: 2px solid var(--rosa-medio); }
-        h1 { color: var(--rosa-fuerte); text-align: center; }
+        h1 { color: var(--rosa-fuerte); text-align: center; margin-top: 0; }
         .main { flex: 1; padding: 40px; }
+        
+        /* Grid por defecto (Computadora) */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
         
-        /* Etiquetas de filtros estilo boutique */
-        .filter-label {
-            font-size: 0.72em;
-            font-weight: bold;
-            color: #8a8a8a;
-            margin-top: 16px;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            display: block;
-        }
-
-        /* --- NUEVO: CONTENEDOR PARA LA LUPA Y EL BOTÓN "X" --- */
-        .search-wrapper {
-            position: relative;
-            width: 100%;
-            margin: 4px 0 12px 0;
-        }
+        .filter-label { font-size: 0.72em; font-weight: bold; color: #8a8a8a; margin-top: 16px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1.5px; display: block; }
+        .search-wrapper { position: relative; width: 100%; margin: 4px 0 12px 0; }
 
         input#search { 
-            width: 100%; 
-            padding: 11px 38px 11px 38px; /* Espacio para lupa (izq) y X (der) */
-            margin: 0; 
-            border: 1px solid var(--rosa-medio); 
-            border-radius: 8px; 
+            width: 100%; padding: 11px 38px 11px 38px; margin: 0; border: 1px solid var(--rosa-medio); border-radius: 8px; 
             background: #fff url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238a8a8a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E") no-repeat left 14px center;
-            background-size: 15px;
-            box-sizing: border-box; 
-            transition: all 0.25s ease;
-            color: var(--texto);
-            font-family: inherit;
-            font-size: 0.95em;
+            background-size: 15px; box-sizing: border-box; transition: all 0.25s ease; color: var(--texto); font-family: inherit; font-size: 0.95em;
         }
-        input#search:focus {
-            outline: none;
-            border-color: var(--rosa-fuerte);
-            box-shadow: 0 0 0 3px rgba(194, 24, 91, 0.15);
-        }
+        input#search:focus { outline: none; border-color: var(--rosa-fuerte); box-shadow: 0 0 0 3px rgba(194, 24, 91, 0.15); }
 
-        /* BOTÓN DE LIMPIAR INTERACTIVO */
-        .clear-search-btn {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #8a8a8a;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            display: none; /* Invisible por defecto */
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            width: 20px;
-            height: 20px;
-            transition: color 0.2s ease;
-        }
-        .clear-search-btn:hover {
-            color: var(--rosa-fuerte);
-        }
+        .clear-search-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #8a8a8a; font-size: 18px; font-weight: bold; cursor: pointer; display: none; align-items: center; justify-content: center; padding: 0; width: 20px; height: 20px; transition: color 0.2s ease; }
+        .clear-search-btn:hover { color: var(--rosa-fuerte); }
 
         select { 
-            width: 100%; 
-            padding: 11px 35px 11px 14px; 
-            margin: 4px 0 12px 0; 
-            border: 1px solid var(--rosa-medio); 
-            border-radius: 8px; 
+            width: 100%; padding: 11px 35px 11px 14px; margin: 4px 0 12px 0; border: 1px solid var(--rosa-medio); border-radius: 8px; 
             background: #fff url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23c2185b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 14px center;
-            background-size: 14px;
-            box-sizing: border-box; 
-            appearance: none; 
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            transition: all 0.25s ease;
-            cursor: pointer;
-            color: var(--texto);
-            font-family: inherit;
-            font-size: 0.95em;
+            background-size: 14px; box-sizing: border-box; appearance: none; -webkit-appearance: none; -moz-appearance: none; transition: all 0.25s ease; cursor: pointer; color: var(--texto); font-family: inherit; font-size: 0.95em;
         }
         select:hover { background-color: var(--rosa-claro); border-color: var(--rosa-fuerte); }
         select:focus { outline: none; border-color: var(--rosa-fuerte); box-shadow: 0 0 0 3px rgba(194, 24, 91, 0.15); }
 
-        /* Tarjeta interactiva */
-        .card { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 15px; 
-            border: 1px solid var(--rosa-medio); 
-            cursor: pointer; 
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+        .card { background: white; padding: 20px; border-radius: 15px; border: 1px solid var(--rosa-medio); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; justify-content: space-between; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(194, 24, 91, 0.1); }
 
-        /* --- CAROUSEL DE IMÁGENES --- */
         .img-container { position: relative; width: 100%; height: 180px; border-radius: 10px; overflow: hidden; background: #fff; }
         .product-img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.15s ease; }
         .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.6); border: none; color: var(--texto); font-size: 16px; padding: 6px 10px; cursor: pointer; border-radius: 50%; display: none; align-items: center; justify-content: center; z-index: 2; transition: background 0.2s; }
@@ -117,23 +49,51 @@
         .carousel-btn.prev { left: 5px; }
         .carousel-btn.next { right: 5px; }
 
-        .price { color: var(--rosa-fuerte); font-weight: bold; font-size: 1.2em; margin: 10px 0; }
-        .tono-tag { display: inline-block; background: var(--rosa-claro); color: var(--rosa-fuerte); padding: 3px 10px; border-radius: 15px; font-size: 0.75em; margin: 2px; border: 1px solid var(--rosa-medio); }
-        .btn-wa { display: block; background: var(--rosa-fuerte); color: white; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; margin-top: 15px; font-weight: bold; }
+        .card h3 { font-size: 1em; margin: 10px 0 5px 0; color: var(--texto); }
+        .price { color: var(--rosa-fuerte); font-weight: bold; font-size: 1.1em; margin: 5px 0; }
+        .tono-container { margin: 5px 0; min-height: 25px; }
+        .tono-tag { display: inline-block; background: var(--rosa-claro); color: var(--rosa-fuerte); padding: 2px 8px; border-radius: 12px; font-size: 0.7em; margin: 2px; border: 1px solid var(--rosa-medio); }
+        .btn-wa { display: block; background: var(--rosa-fuerte); color: white; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; margin-top: auto; font-weight: bold; font-size: 0.9em; }
 
-        /* --- BOTONES INTERACTIVOS (FILTER CHIPS) --- */
         .chip-group-label { font-size: 0.72em; font-weight: bold; color: var(--rosa-fuerte); margin-top: 18px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1.5px; }
         .chip-container { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
         .chip { background: white; color: var(--texto); border: 1px solid var(--rosa-medio); padding: 6px 12px; border-radius: 20px; font-size: 0.85em; cursor: pointer; transition: all 0.2s ease; font-family: 'Segoe UI', sans-serif; }
         .chip:hover { border-color: var(--rosa-fuerte); background: var(--rosa-claro); }
         .chip.active { background: var(--rosa-fuerte); color: white; border-color: var(--rosa-fuerte); font-weight: bold; }
 
-        /* --- VENTANA MODAL (VISTA DETALLADA) --- */
+        /* --- VENTANA MODAL --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 1000; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 450px; max-height: 80vh; overflow-y: auto; position: relative; border: 2px solid var(--rosa-medio); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .modal-close { position: absolute; top: 15px; right: 15px; background: var(--rosa-claro); border: none; font-size: 20px; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--rosa-fuerte); font-weight: bold; display: flex; align-items: center; justify-content: center; }
         .modal-desc { background: var(--rosa-claro); padding: 12px; border-radius: 8px; font-size: 0.9em; border-left: 4px solid var(--rosa-fuerte); margin: 15px 0; line-height: 1.5; }
+
+        /* =======================================================
+           NUEVO: REGLAS EXCLUSIVAS PARA CELULARES (DISEÑO RESPONSIVO)
+           ======================================================= */
+        @media (max-width: 768px) {
+            body { flex-direction: column; /* Apila sidebar arriba y catálogo abajo */ }
+            
+            .sidebar { 
+                width: 100%; height: auto; position: relative; 
+                border-right: none; border-bottom: 1px solid var(--rosa-medio); 
+                padding: 20px 15px; 
+            }
+            .logo img { width: 80px; height: 80px; /* Logo más sutil en cel */ }
+            
+            .main { padding: 20px 15px; }
+            h1 { font-size: 1.8em; margin-bottom: 15px; }
+            
+            /* Catálogo en 2 columnas perfectas para celular, estilo tienda premium */
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            
+            .card { padding: 10px; border-radius: 12px; }
+            .img-container { height: 130px; /* Imagen un toque más baja en cel */ }
+            .card h3 { font-size: 0.88em; margin: 8px 0 4px 0; }
+            .price { font-size: 0.95em; }
+            .tono-tag { font-size: 0.65em; padding: 1px 6px; }
+            .btn-wa { padding: 8px; font-size: 0.8em; margin-top: 8px; }
+        }
     </style>
 </head>
 <body>
@@ -142,7 +102,6 @@
         <div class="logo"><img src="https://i.imgur.com/j5LnYQB.png" alt="Bloome"></div>
         
         <label class="filter-label">Buscar Producto</label>
-        <!-- ACTUALIZADO: ENVOLTORIO CON BOTÓN "X" INTEGRADO -->
         <div class="search-wrapper">
             <input type="text" id="search" placeholder="Escribe aquí...">
             <button id="clearSearch" class="clear-search-btn" onclick="clearSearchInput()">&times;</button>
@@ -173,7 +132,6 @@
     <script>
         const api = 'https://sheetdb.io/api/v1/f7a2fgi064wzu';
         let products = [];
-        
         let selectedSub = '';
         let selectedSubSub = '';
 
@@ -204,60 +162,43 @@
 
         function renderSubChips(parentVal) {
             const container = document.getElementById('containerSub');
-            if (!parentVal) {
-                container.style.display = 'none';
-                return;
-            }
+            if (!parentVal) { container.style.display = 'none'; return; }
             
             const filtered = products.filter(p => getVal(p, 'Categoría').split(',').map(s => s.trim()).includes(parentVal));
             const options = [...new Set(filtered.flatMap(p => getVal(p, 'SubCategoria').split(',').map(s => s.trim())))].filter(v => v);
             
             if (options.length > 0) {
                 container.style.display = 'block';
-                let html = `<div class="chip-group-label">Opciones</div>`;
-                html += `<div class="chip-container">`;
+                let html = `<div class="chip-group-label">Opciones</div><div class="chip-container">`;
                 html += `<button class="chip active" onclick="selectSubChip(this, '')">Todas</button>`;
-                html += options.map(o => `<button class="chip" onclick="selectSubChip(this, '${o}')">${o}</button>`).join('');
-                html += `</div>`;
+                html += options.map(o => `<button class="chip" onclick="selectSubChip(this, '${o}')">${o}</button>`).join('') + `</div>`;
                 container.innerHTML = html;
-            } else {
-                container.style.display = 'none';
-            }
+            } else { container.style.display = 'none'; }
         }
 
         function selectSubChip(button, value) {
-            selectedSub = value;
-            selectedSubSub = ''; 
-            
+            selectedSub = value; selectedSubSub = ''; 
             const container = document.getElementById('containerSub');
             container.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
             button.classList.add('active');
-            
             renderSubSubChips(value);
             applyFilters();
         }
 
         function renderSubSubChips(parentVal) {
             const container = document.getElementById('containerSubSub');
-            if (!parentVal) {
-                container.style.display = 'none';
-                return;
-            }
+            if (!parentVal) { container.style.display = 'none'; return; }
             
             const filtered = products.filter(p => getVal(p, 'SubCategoria').split(',').map(s => s.trim()).includes(parentVal));
             const options = [...new Set(filtered.flatMap(p => getVal(p, 'Sub-SubCategoria').split(',').map(s => s.trim())))].filter(v => v);
             
             if (options.length > 0) {
                 container.style.display = 'block';
-                let html = `<div class="chip-group-label">Tipos / Acabados</div>`;
-                html += `<div class="chip-container">`;
+                let html = `<div class="chip-group-label">Tipos / Acabados</div><div class="chip-container">`;
                 html += `<button class="chip active" onclick="selectSubSubChip(this, '')">Todos</button>`;
-                html += options.map(o => `<button class="chip" onclick="selectSubSubChip(this, '${o}')">${o}</button>`).join('');
-                html += `</div>`;
+                html += options.map(o => `<button class="chip" onclick="selectSubSubChip(this, '${o}')">${o}</button>`).join('') + `</div>`;
                 container.innerHTML = html;
-            } else {
-                container.style.display = 'none';
-            }
+            } else { container.style.display = 'none'; }
         }
 
         function selectSubSubChip(button, value) {
@@ -268,13 +209,12 @@
             applyFilters();
         }
 
-        // --- NUEVA FUNCIÓN: PARA BORRAR DE GOLPE EL BUSCADOR Y RESTABLECER ---
         function clearSearchInput() {
             const searchInput = document.getElementById('search');
-            searchInput.value = ''; // Borra el texto
-            document.getElementById('clearSearch').style.display = 'none'; // Esconde la X
-            searchInput.focus(); // Devuelve el foco al input
-            applyFilters(); // Recalcula los filtros al instante
+            searchInput.value = '';
+            document.getElementById('clearSearch').style.display = 'none';
+            searchInput.focus();
+            applyFilters();
         }
 
         function applyFilters() {
@@ -290,29 +230,22 @@
                 const matchCat = !fC || getVal(p, 'Categoría').split(',').map(s => s.trim()).includes(fC);
                 const matchSub = !fS || getVal(p, 'SubCategoria').split(',').map(s => s.trim()).includes(fS);
                 const matchSubSub = !fSS || getVal(p, 'Sub-SubCategoria').split(',').map(s => s.trim()).includes(fSS);
-                
                 return matchSearch && matchMarca && matchCat && matchSub && matchSubSub;
             }));
         }
 
-        // --- ESCUCHA DE ENTRADA EN EL BUSCADOR CONTROLANDO LA VISIBILIDAD DE LA "X" ---
         document.getElementById('search').addEventListener('input', (e) => {
-            const clearBtn = document.getElementById('clearSearch');
-            // Muestra el botón si hay texto escrito, si no, lo esconde
-            clearBtn.style.display = e.target.value ? 'flex' : 'none';
+            document.getElementById('clearSearch').style.display = e.target.value ? 'flex' : 'none';
             applyFilters();
         });
-
         document.getElementById('filterMarca').addEventListener('input', applyFilters);
 
         function render(data) {
             document.getElementById('catalog').innerHTML = data.map(item => {
                 const globalIndex = products.indexOf(item);
-                
                 const img1 = getVal(item, 'Imagen 1');
                 const img2 = getVal(item, 'Imagen 2');
                 const img3 = getVal(item, 'Imagen 3');
-                
                 const arrayImagenes = [img1, img2, img3].filter(img => img && img.trim() !== "");
                 const displayArrows = arrayImagenes.length > 1 ? 'style="display: flex;"' : 'style="display: none;"';
 
@@ -325,8 +258,8 @@
                         </div>
                         <h3>${getVal(item, 'Nombre')}</h3>
                         <div class="price">${getVal(item, 'Precio Venta')}</div>
-                        <div>${getVal(item, 'Tonos Disponibles').split(',').map(t => t.trim() ? `<span class="tono-tag">${t.trim()}</span>` : '').join('')}</div>
-                        <a href="${getVal(item, 'Enlace-WhatsApp')}" class="btn-wa" target="_blank" onclick="event.stopPropagation()">Pedir por WhatsApp</a>
+                        <div class="tono-container">${getVal(item, 'Tonos Disponibles').split(',').map(t => t.trim() ? `<span class="tono-tag">${t.trim()}</span>` : '').join('')}</div>
+                        <a href="${getVal(item, 'Enlace-WhatsApp')}" class="btn-wa" target="_blank" onclick="event.stopPropagation()">Pedir</a>
                     </div>
                 `;
             }).join('');
@@ -334,13 +267,11 @@
 
         function changeImage(event, button, direction) {
             event.stopPropagation(); 
-            
             const container = button.parentElement;
             const img = container.querySelector('.product-img');
             const images = img.dataset.images.split(',');
-            let currentIndex = parseInt(img.dataset.index);
+            let currentIndex = parseInt(img.dataset.index) + direction;
 
-            currentIndex += direction;
             if (currentIndex >= images.length) currentIndex = 0;
             if (currentIndex < 0) currentIndex = images.length - 1;
 
@@ -355,7 +286,6 @@
         function openModal(index) {
             const item = products[index];
             const modalBody = document.getElementById('modal-body');
-            
             const img1 = getVal(item, 'Imagen 1');
             const img2 = getVal(item, 'Imagen 2');
             const img3 = getVal(item, 'Imagen 3');
@@ -363,9 +293,7 @@
             const displayArrows = arrayImagenes.length > 1 ? 'style="display: flex;"' : 'style="display: none;"';
 
             const descSheet = getVal(item, 'Descripción') || getVal(item, 'Descripcion');
-            const descFinal = descSheet && descSheet.trim() !== "" 
-                ? descSheet 
-                : "Este producto no cuenta con una descripción detallada todavía, ¡pero puedes consultar sus tonos disponibles por WhatsApp!";
+            const descFinal = descSheet && descSheet.trim() !== "" ? descSheet : "Este producto no cuenta con una descripción detallada todavía.";
 
             modalBody.innerHTML = `
                 <div class="img-container" style="height: 240px; margin-bottom: 15px; border-radius: 8px;">
@@ -373,32 +301,19 @@
                     <img class="product-img" src="${arrayImagenes[0] || 'https://via.placeholder.com/200'}" onerror="this.src='https://via.placeholder.com/200'" data-images="${arrayImagenes.join(',')}" data-index="0" style="object-fit: contain;">
                     <button class="carousel-btn next" ${displayArrows} onclick="changeImage(event, this, 1)">&#10095;</button>
                 </div>
-
                 <div style="font-size: 0.75em; color: var(--rosa-fuerte); text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 4px;">
                     ${getVal(item, 'Marca')} | ${getVal(item, 'Categoría')}
                 </div>
                 <h2 style="color: var(--texto); margin: 0 0 8px 0; font-size: 1.4em;">${getVal(item, 'Nombre')}</h2>
                 <div class="price" style="font-size: 1.3em; margin: 5px 0 12px 0;">${getVal(item, 'Precio Venta')}</div>
-                
-                <div style="margin-bottom: 15px;">
-                    ${getVal(item, 'Tonos Disponibles').split(',').map(t => t.trim() ? `<span class="tono-tag">${t.trim()}</span>` : '').join('')}
-                </div>
-                
-                <div class="modal-desc">
-                    <strong>Descripción:</strong><br>
-                    ${descFinal}
-                </div>
-                
+                <div style="margin-bottom: 15px;">${getVal(item, 'Tonos Disponibles').split(',').map(t => t.trim() ? `<span class="tono-tag">${t.trim()}</span>` : '').join('')}</div>
+                <div class="modal-desc"><strong>Descripción:</strong><br>${descFinal}</div>
                 <a href="${getVal(item, 'Enlace-WhatsApp')}" class="btn-wa" target="_blank">Pedir por WhatsApp</a>
             `;
-
             document.getElementById('product-modal').classList.add('active');
         }
 
-        function closeModal() {
-            document.getElementById('product-modal').classList.remove('active');
-        }
-
+        function closeModal() { document.getElementById('product-modal').classList.remove('active'); }
         init();
     </script>
 </body>
