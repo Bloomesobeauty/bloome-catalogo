@@ -236,12 +236,12 @@
 
         const getVal = (item, key) => item[key] || item[key + ' '] || '';
 
-        // 👑 FUNCIÓN V2.4: FORMATO SOLICITADO DE DISPONIBILIDAD EXACTO
+        // 👑 FUNCIÓN V2.5: SE AGREGÓ .trim() PARA BLINDAR LAS NEGRIFITAS DE WHATSAPP
         function generateWaLink(item) {
-            const nombre = getVal(item, 'Nombre');
-            const precio = getVal(item, 'Precio Venta');
+            // El .trim() elimina automáticamente cualquier espacio invisible al inicio o al final
+            const nombre = getVal(item, 'Nombre').trim();
+            const precio = getVal(item, 'Precio Venta').trim();
             
-            // Texto limpio con el formato de pregunta por stock
             const textoMensaje = `Hola Bloome Beauty! 🌸\n\nMe interesa el siguiente producto:\n\n🛍️ *${nombre}*\n💰 Precio: ${precio}\n\n¡¿Está disponible?! ✨`;
             
             return `https://wa.me/573160570546?text=${encodeURIComponent(textoMensaje)}`;
