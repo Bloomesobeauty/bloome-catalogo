@@ -236,7 +236,18 @@
 
         const getVal = (item, key) => item[key] || item[key + ' '] || '';
 
-        // 👑 FUNCIÓN REPARADA CON ORDENAMIENTO BLINDADO
+        // 👑 FUNCIÓN AUTOMÁTICA DE WHATSAPP CON LINK DE FOTO INCLUIDO
+        function generateWaLink(item) {
+            const nombre = getVal(item, 'Nombre');
+            const foto1 = getVal(item, 'Imagen 1');
+            
+            // Texto estilizado con saltos de línea y negritas para WhatsApp
+            const textoMensaje = `Hola Bloome Beauty! 🌸\nMe interesa este producto: *${nombre}*\n\nAquí puedes ver la foto:\n${foto1}`;
+            
+            // Retorna el link final codificado correctamente
+            return `https://wa.me/573160570546?text=${encodeURIComponent(textoMensaje)}`;
+        }
+
         async function init() {
             try {
                 const res = await fetch(api);
@@ -245,7 +256,6 @@
                 if (Array.isArray(rawData)) {
                     products = rawData;
                     
-                    // Ordena alfabéticamente por la columna 'Categoría' desde el inicio
                     products.sort((a, b) => {
                         const catA = (getVal(a, 'Categoría') || '').trim().toLowerCase();
                         const catB = (getVal(b, 'Categoría') || '').trim().toLowerCase();
@@ -431,7 +441,7 @@
                                 <div class="price">${getVal(item, 'Precio Venta')}</div>
                                 <div class="tono-container">${getVal(item, 'Tonos Disponibles').split(',').map(t => t.trim() ? `<span class="tono-tag">${t.trim()}</span>` : '').join('')}</div>
                             </div>
-                            <a href="${getVal(item, 'Enlace-WhatsApp')}" class="btn-wa" target="_blank" onclick="event.stopPropagation()">Pedir</a>
+                            <a href="${generateWaLink(item)}" class="btn-wa" target="_blank" onclick="event.stopPropagation()">Pedir</a>
                         </div>
                     </div>
                 `;
@@ -521,7 +531,7 @@
                 <div class="price" style="font-size: 1.25em; margin-bottom: 10px;">${getVal(item, 'Precio Venta')}</div>
                 <div style="margin-bottom: 15px;">${getVal(item, 'Tonos Disponibles').split(',').map(t => t.trim() ? `<span class="tono-tag" style="font-size:0.75em">${t.trim()}</span>` : '').join('')}</div>
                 <div class="modal-desc"><strong>Descripción del producto:</strong><br>${descFinal}</div>
-                <a href="${getVal(item, 'Enlace-WhatsApp')}" class="btn-wa" target="_blank" style="padding:12px; font-size:0.95em;">Pedir por WhatsApp</a>
+                <a href="${generateWaLink(item)}" class="btn-wa" target="_blank" style="padding:12px; font-size:0.95em;">Pedir por WhatsApp</a>
             `;
             document.getElementById('product-modal').classList.add('active');
         }
