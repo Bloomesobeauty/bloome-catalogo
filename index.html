@@ -236,15 +236,15 @@
 
         const getVal = (item, key) => item[key] || item[key + ' '] || '';
 
-        // 👑 FUNCIÓN AUTOMÁTICA DE WHATSAPP CON LINK DE FOTO INCLUIDO
+        // 👑 FUNCIÓN CORREGIDA: REPORTE DE TEXTO PERFECTO PARA WHATSAPP
         function generateWaLink(item) {
             const nombre = getVal(item, 'Nombre');
-            const foto1 = getVal(item, 'Imagen 1');
+            const marca = getVal(item, 'Marca');
+            const precio = getVal(item, 'Precio Venta');
             
-            // Texto estilizado con saltos de línea y negritas para WhatsApp
-            const textoMensaje = `Hola Bloome Beauty! 🌸\nMe interesa este producto: *${nombre}*\n\nAquí puedes ver la foto:\n${foto1}`;
+            // Texto limpio con saltos de línea estratégicos para leer de un vistazo
+            const textoMensaje = `Hola Bloome Beauty! 🌸\n\nMe interesa el siguiente producto:\n\n🛍️ *${nombre}*\n🏷️ Marca: ${marca}\n💰 Precio: ${precio}\n\n¡Quiero pedirlo! ✨`;
             
-            // Retorna el link final codificado correctamente
             return `https://wa.me/573160570546?text=${encodeURIComponent(textoMensaje)}`;
         }
 
