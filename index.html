@@ -236,14 +236,13 @@
 
         const getVal = (item, key) => item[key] || item[key + ' '] || '';
 
-        // 👑 FUNCIÓN CORREGIDA: REPORTE DE TEXTO PERFECTO PARA WHATSAPP
+        // 👑 FUNCIÓN V2.4: FORMATO SOLICITADO DE DISPONIBILIDAD EXACTO
         function generateWaLink(item) {
             const nombre = getVal(item, 'Nombre');
-            const marca = getVal(item, 'Marca');
             const precio = getVal(item, 'Precio Venta');
             
-            // Texto limpio con saltos de línea estratégicos para leer de un vistazo
-            const textoMensaje = `Hola Bloome Beauty! 🌸\n\nMe interesa el siguiente producto:\n\n🛍️ *${nombre}*\n🏷️ Marca: ${marca}\n💰 Precio: ${precio}\n\n¡Quiero pedirlo! ✨`;
+            // Texto limpio con el formato de pregunta por stock
+            const textoMensaje = `Hola Bloome Beauty! 🌸\n\nMe interesa el siguiente producto:\n\n🛍️ *${nombre}*\n💰 Precio: ${precio}\n\n¡¿Está disponible?! ✨`;
             
             return `https://wa.me/573160570546?text=${encodeURIComponent(textoMensaje)}`;
         }
@@ -509,6 +508,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // --- 🎭 MANEJO DE VENTANA MODAL ---
         function openModal(index) {
             const item = products[index];
             const modalBody = document.getElementById('modal-body');
