@@ -236,7 +236,7 @@
 
         const getVal = (item, key) => item[key] || item[key + ' '] || '';
 
-        // 👑 FUNCIÓN V2.5: SE AGREGÓ .trim() PARA BLINDAR LAS NEGRIFITAS DE WHATSAPP
+        // 👑 FUNCIÓN V2.6: AJUSTADA CON API DIRECTA DE WHATSAPP PARA EVITAR ERROR DE EMOJIS EN INSTAGRAM
         function generateWaLink(item) {
             // El .trim() elimina automáticamente cualquier espacio invisible al inicio o al final
             const nombre = getVal(item, 'Nombre').trim();
@@ -244,7 +244,8 @@
             
             const textoMensaje = `Hola Bloome Beauty! 🌸\n\nMe interesa el siguiente producto:\n\n🛍️ *${nombre}*\n💰 Precio: ${precio}\n\n¡¿Está disponible?! ✨`;
             
-            return `https://wa.me/573160570546?text=${encodeURIComponent(textoMensaje)}`;
+            // USAMOS EL LINK DIRECTO DE LA API PARA EVITAR QUE EL INTERNO DE INSTAGRAM ROMPA LOS EMOJIS
+            return `https://api.whatsapp.com/send?phone=573160570546&text=${encodeURIComponent(textoMensaje)}`;
         }
 
         async function init() {
