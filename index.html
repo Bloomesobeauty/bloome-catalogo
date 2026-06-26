@@ -254,7 +254,13 @@
                 const rawData = await res.json();
                 
                 if (Array.isArray(rawData)) {
-                    products = rawData;
+                    // 🔥 NUEVO FILTRO DE STOCK: Excluimos lo que diga "agotado" ANTES de guardar en products
+                    const productosDisponibles = rawData.filter(item => {
+                        const stock = getVal(item, 'Stock').toLowerCase().trim();
+                        return stock !== 'agotado'; 
+                    });
+
+                    products = productosDisponibles;
                     
                     products.sort((a, b) => {
                         const catA = (getVal(a, 'Categoría') || '').trim().toLowerCase();
