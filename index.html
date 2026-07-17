@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloome Beauty | Tienda Premium</title>
+    
+    <!-- --- OPTIMIZACIÓN DE RAPIDEZ --- -->
+    <link rel="preconnect" href="https://sheetdb.io">
+    <link rel="preconnect" href="https://i.imgur.com">
+    <link rel="preconnect" href="https://via.placeholder.com">
+
     <style>
         /* --- CONFIGURACIÓN DE MARCA & PALETA --- */
         :root { 
@@ -122,13 +128,24 @@
         }
         .card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(194,24,91,0.12); }
 
-        /* Carrusel Táctil Pro */
+        /* Carrusel Táctil Pro con Aparición Suave */
         .img-container { 
             position: relative; width: 100%; aspect-ratio: 1 / 1; 
             border-radius: 12px; overflow: hidden; background: #fff;
             touch-action: pan-y;
         }
-        .product-img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.2s ease, opacity 0.15s; }
+        
+        /* MEJORA 1: Efecto FadeIn para aparición de imágenes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .product-img { 
+            width: 100%; height: 100%; object-fit: contain; 
+            transition: transform 0.2s ease, opacity 0.15s; 
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
         .carousel-btn { 
             position: absolute; top: 50%; transform: translateY(-50%); 
             background: rgba(255, 255, 255, 0.85); border: none; color: var(--texto); 
@@ -377,9 +394,10 @@
 
             box.innerHTML = filtered.map(item => {
                 const idx = products.indexOf(item);
+                // MEJORA 2: Atributo loading="lazy" añadido en la búsqueda
                 return `
                     <div class="predictive-item" onclick="openPredictiveProduct(${idx})">
-                        <img class="predictive-thumb" src="${getVal(item, 'Imagen 1') || 'https://via.placeholder.com/150'}" onerror="this.src='https://via.placeholder.com/150'">
+                        <img class="predictive-thumb" loading="lazy" src="${getVal(item, 'Imagen 1') || 'https://via.placeholder.com/150'}" onerror="this.src='https://via.placeholder.com/150'">
                         <div class="predictive-info">
                             <h4>${getVal(item, 'Nombre')}</h4>
                             <span>${getVal(item, 'Precio Venta')}</span>
@@ -431,13 +449,14 @@
                 const arrowsDisplay = imgs.length > 1 ? 'style="display: flex;"' : 'style="display: none;"';
                 const dotsHtml = imgs.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}"></span>`).join('');
 
+                // MEJORA 2: Atributo loading="lazy" añadido en el catálogo principal
                 return `
                     <div class="card" onclick="openModal(${globalIndex})">
                         <div class="img-container" 
                              ontouchstart="cardTouchStart(event, this)" 
                              ontouchend="cardTouchEnd(event, this)">
                             <button class="carousel-btn prev" ${arrowsDisplay} onclick="changeImage(event, this, -1)">&#10094;</button>
-                            <img class="product-img" src="${imgs[0] || 'https://via.placeholder.com/200'}" onerror="this.src='https://via.placeholder.com/200'" data-images="${imgs.join(',')}" data-index="0">
+                            <img class="product-img" loading="lazy" src="${imgs[0] || 'https://via.placeholder.com/200'}" onerror="this.src='https://via.placeholder.com/200'" data-images="${imgs.join(',')}" data-index="0">
                             <button class="carousel-btn next" ${arrowsDisplay} onclick="changeImage(event, this, 1)">&#10095;</button>
                             <div class="carousel-dots">${dotsHtml}</div>
                         </div>
@@ -522,14 +541,18 @@
             const imgs = [getVal(item, 'Imagen 1'), getVal(item, 'Imagen 2'), getVal(item, 'Imagen 3')].filter(i => i && i.trim() !== "");
             const arrowsDisplay = imgs.length > 1 ? 'style="display: flex;"' : 'style="display: none;"';
             const dotsHtml = imgs.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}"></span>`).join('');
+            
             const descSheet = getVal(item, 'Descripción') || getVal(item, 'Descripcion');
-            const descFinal = descSheet && descSheet.trim() !== "" ? descSheet : "Este grandioso producto no cuenta con descripción detallada todavía.";
+            let descFinal = descSheet && descSheet.trim() !== "" ? descSheet : "Este grandioso producto no cuenta con descripción detallada todavía.";
+
+            // MEJORA 3: Reemplazar los saltos de línea (\n) por etiquetas <br> para respetar los párrafos de Google Sheets
+            descFinal = descFinal.replace(/\n/g, '<br>');
 
             modalBody.innerHTML = `
                 <div class="img-container" style="aspect-ratio:4/3; margin-bottom: 15px;" 
                      ontouchstart="cardTouchStart(event, this)" ontouchend="cardTouchEnd(event, this)">
                     <button class="carousel-btn prev" ${arrowsDisplay} onclick="changeImage(event, this, -1)">&#10094;</button>
-                    <img class="product-img" src="${imgs[0] || 'https://via.placeholder.com/200'}" onerror="this.src='https://via.placeholder.com/200'" data-images="${imgs.join(',')}" data-index="0" style="object-fit: contain;">
+                    <img class="product-img" loading="lazy" src="${imgs[0] || 'https://via.placeholder.com/200'}" onerror="this.src='https://via.placeholder.com/200'" data-images="${imgs.join(',')}" data-index="0" style="object-fit: contain;">
                     <button class="carousel-btn next" ${arrowsDisplay} onclick="changeImage(event, this, 1)">&#10095;</button>
                     <div class="carousel-dots">${dotsHtml}</div>
                 </div>
