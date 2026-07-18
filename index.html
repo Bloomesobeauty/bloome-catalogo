@@ -295,8 +295,16 @@
                 const imgs = [getVal(item, 'Imagen 1'), getVal(item, 'Imagen 2'), getVal(item, 'Imagen 3')].filter(i => i && i.trim() !== "");
                 return `
                     <div class="card" onclick="openModal(${globalIndex})">
-                        <div class="img-container"><button class="carousel-btn prev" ${imgs.length > 1 ? 'style="display: flex;"' : ''} onclick="changeImage(event, this, -1)">&#10094;</button><img class="product-img" ${isPriority ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="${isPriority ? 'sync' : 'async'}" src="${imgs[0] || 'https://via.placeholder.com/200'}" data-images="${imgs.join(',')}" data-index="0"><button class="carousel-btn next" ${imgs.length > 1 ? 'style="display: flex;"' : ''} onclick="changeImage(event, this, 1)">&#10095;</button><div class="carousel-dots">${imgs.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}"></span>`).join('')}</div></div>
-                        <div class="card-meta"><div><h3>${getVal(item, 'Nombre')}</h3><div class="price">${getVal(item, 'Precio Venta')}</div><div class="tono-container">${getVal(item, 'Tonos Disponibles').split(',').map(t => t.trim() ? `<span class="tono-tag">${t.trim()}</span>` : '').join('')}</div></div><a href="${generateWaLink(item)}" class="btn-wa" target="_blank" onclick="event.stopPropagation()">Pedir</a></div>
+                        <div class="img-container" ontouchstart="cardTouchStart(event, this)" ontouchend="cardTouchEnd(event, this)">
+                            <button class="carousel-btn prev" ${imgs.length > 1 ? 'style="display: flex;"' : ''} onclick="changeImage(event, this, -1)">&#10094;</button>
+                            <img class="product-img" ${isPriority ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="${isPriority ? 'sync' : 'async'}" src="${imgs[0] || 'https://via.placeholder.com/200'}" data-images="${imgs.join(',')}" data-index="0">
+                            <button class="carousel-btn next" ${imgs.length > 1 ? 'style="display: flex;"' : ''} onclick="changeImage(event, this, 1)">&#10095;</button>
+                            <div class="carousel-dots">${imgs.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}"></span>`).join('')}</div>
+                        </div>
+                        <div class="card-meta">
+                            <div><h3>${getVal(item, 'Nombre')}</h3><div class="price">${getVal(item, 'Precio Venta')}</div><div class="tono-container">${getVal(item, 'Tonos Disponibles').split(',').map(t => t.trim() ? `<span class="tono-tag">${t.trim()}</span>` : '').join('')}</div></div>
+                            <a href="${generateWaLink(item)}" class="btn-wa" target="_blank" onclick="event.stopPropagation()">Pedir</a>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -304,7 +312,7 @@
 
         function changeImage(event, button, direction) {
             if(event) event.stopPropagation();
-            const container = button.parentElement;
+            const container = button.closest('.img-container');
             const img = container.querySelector('.product-img');
             const dots = container.querySelectorAll('.dot');
             const images = img.dataset.images.split(',');
@@ -314,13 +322,15 @@
             setTimeout(() => { img.src = images[currentIndex]; img.dataset.index = currentIndex; img.style.opacity = 1; dots.forEach((dot, idx) => dot.classList.toggle('active', idx === currentIndex)); }, 100);
         }
 
-        function cardTouchStart(e, container) { this.touchXStart = e.touches[0].clientX; }
+        function cardTouchStart(e, container) { container.touchXStart = e.touches[0].clientX; }
         function cardTouchEnd(e, container) {
-            const diffX = this.touchXStart - e.changedTouches[0].clientX;
+            if (!container.touchXStart) return;
+            const diffX = container.touchXStart - e.changedTouches[0].clientX;
             if (Math.abs(diffX) > 40) {
                 const btn = diffX > 0 ? container.querySelector('.carousel-btn.next') : container.querySelector('.carousel-btn.prev');
-                if (btn.style.display !== 'none') changeImage(null, btn, diffX > 0 ? 1 : -1);
+                if (btn && btn.style.display !== 'none') changeImage(null, btn, diffX > 0 ? 1 : -1);
             }
+            container.touchXStart = null;
         }
 
         function renderPaginationControls(totalItems) {
@@ -342,7 +352,12 @@
             const descFinal = descSheet && descSheet.trim() !== "" ? `<div class="modal-desc"><strong>Descripción del producto:</strong><br>${descSheet.trim().replace(/\n/g, '<br>')}</div>` : "";
             
             document.getElementById('modal-body').innerHTML = `
-                <div class="img-container" style="aspect-ratio:4/3; margin-bottom: 15px;"><button class="carousel-btn prev" ${imgs.length > 1 ? 'style="display: flex;"' : ''} onclick="changeImage(event, this, -1)">&#10094;</button><img class="product-img" src="${imgs[0] || 'https://via.placeholder.com/200'}" data-images="${imgs.join(',')}" data-index="0" style="object-fit: contain;"><button class="carousel-btn next" ${imgs.length > 1 ? 'style="display: flex;"' : ''} onclick="changeImage(event, this, 1)">&#10095;</button><div class="carousel-dots">${imgs.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}"></span>`).join('')}</div></div>
+                <div class="img-container" style="aspect-ratio:4/3; margin-bottom: 15px;" ontouchstart="cardTouchStart(event, this)" ontouchend="cardTouchEnd(event, this)">
+                    <button class="carousel-btn prev" ${imgs.length > 1 ? 'style="display: flex;"' : ''} onclick="changeImage(event, this, -1)">&#10094;</button>
+                    <img class="product-img" src="${imgs[0] || 'https://via.placeholder.com/200'}" data-images="${imgs.join(',')}" data-index="0" style="object-fit: contain;">
+                    <button class="carousel-btn next" ${imgs.length > 1 ? 'style="display: flex;"' : ''} onclick="changeImage(event, this, 1)">&#10095;</button>
+                    <div class="carousel-dots">${imgs.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}"></span>`).join('')}</div>
+                </div>
                 <div style="font-size: 0.75em; color: var(--rosa-fuerte); text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 4px;">${getVal(item, 'Marca')}</div>
                 <h2 style="color: var(--texto); margin: 0 0 8px 0; font-size: 1.3em; font-weight:600;">${getVal(item, 'Nombre')}</h2>
                 <div class="price" style="font-size: 1.25em; margin-bottom: 10px;">${getVal(item, 'Precio Venta')}</div>
