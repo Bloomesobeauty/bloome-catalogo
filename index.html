@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloome Beauty | Tienda Premium</title>
     
-    <!-- --- OPTIMIZACIÓN DE RAPIDEZ --- -->
     <link rel="preconnect" href="https://sheetdb.io">
     <link rel="preconnect" href="https://i.imgur.com">
     <link rel="preconnect" href="https://via.placeholder.com">
 
     <style>
-        /* --- CONFIGURACIÓN DE MARCA & PALETA --- */
         :root { 
             --rosa-claro: #fdf4f5; 
             --rosa-fuerte: #c2185b; 
@@ -24,7 +22,6 @@
         * { box-sizing: border-box; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; }
         body { background-color: var(--rosa-claro); color: var(--texto); margin: 0; padding-top: 70px; }
 
-        /* --- 🏢 HEADER FIJO (ESTILO APP PREMIUM) --- */
         .app-header {
             position: fixed; top: 0; left: 0; width: 100%; height: 70px;
             background: white; border-bottom: 1px solid var(--rosa-medio);
@@ -40,7 +37,6 @@
         .header-btn:hover { background: var(--rosa-claro); }
         .header-logo img { height: 50px; width: 50px; border-radius: 50%; border: 1px solid var(--rosa-medio); object-fit: cover; }
 
-        /* --- 🗂️ MENÚ LATERAL DESPLEGABLE (DRAWER CHIC) --- */
         .drawer-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.3); opacity: 0; pointer-events: none;
@@ -64,7 +60,6 @@
         .drawer-header h2 { margin: 0; font-size: 1.2em; color: var(--rosa-fuerte); letter-spacing: 0.5px; }
         .drawer-content { flex: 1; overflow-y: auto; padding: 20px; }
 
-        /* --- ACORDEÓN DE CATEGORÍAS --- */
         .brand-section { margin-bottom: 25px; }
         .filter-title { font-size: 0.75em; font-weight: bold; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; display: block; }
         
@@ -88,7 +83,6 @@
         }
         .subcat-btn:hover, .subcat-btn.active { background: var(--rosa-claro); color: var(--rosa-fuerte); font-weight: bold; }
 
-        /* --- 🔍 BUSCADOR PREDICTIVO INTERACTIVO --- */
         .search-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255, 255, 255, 0.97); z-index: 1100; display: none;
@@ -114,7 +108,6 @@
         .predictive-info h4 { margin: 0 0 3px 0; font-size: 0.92em; color: var(--texto); }
         .predictive-info span { font-size: 0.85em; color: var(--rosa-fuerte); font-weight: bold; }
 
-        /* --- 📦 CATÁLOGO SIMÉTRICO CRISTALINO --- */
         .main-container { padding: 25px 15px; max-width: 1200px; margin: 0 auto; }
         .active-filter-tag { text-align: center; font-size: 1.2em; color: var(--rosa-fuerte); font-weight: 600; margin: 0 0 20px 0; letter-spacing: 0.5px; }
         
@@ -128,14 +121,12 @@
         }
         .card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(194,24,91,0.12); }
 
-        /* Carrusel Táctil Pro con Aparición Suave */
         .img-container { 
             position: relative; width: 100%; aspect-ratio: 1 / 1; 
             border-radius: 12px; overflow: hidden; background: #fff;
             touch-action: pan-y;
         }
         
-        /* MEJORA 1: Efecto FadeIn para aparición de imágenes */
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.98); }
             to { opacity: 1; transform: scale(1); }
@@ -156,7 +147,6 @@
         .carousel-btn.next { right: 6px; }
         .card:hover .carousel-btn { display: flex; }
 
-        /* Indicador de puntitos */
         .carousel-dots { position: absolute; bottom: 8px; left: 0; width: 100%; display: flex; justify-content: center; gap: 4px; z-index: 3; pointer-events: none; }
         .dot { width: 5px; height: 5px; background: rgba(0,0,0,0.15); border-radius: 50%; transition: background 0.2s; }
         .dot.active { background: var(--rosa-fuerte); width: 12px; border-radius: 3px; }
@@ -174,7 +164,6 @@
         }
         .btn-wa:hover { background: #a01147; }
 
-        /* --- 🎛️ PAGINACIÓN INTELIGENTE --- */
         .pagination-container { display: flex; justify-content: center; align-items: center; gap: 8px; margin: 35px 0 15px 0; }
         .page-btn {
             background: white; border: 1px solid var(--rosa-medio); color: var(--texto);
@@ -184,7 +173,6 @@
         .page-btn.active { background: var(--rosa-fuerte); color: white; border-color: var(--rosa-fuerte); font-weight: bold; }
         .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        /* --- 🎭 VENTANA MODAL DETALLE --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 1200; padding: 15px; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content { background: white; padding: 25px; border-radius: 20px; width: 100%; max-width: 440px; max-height: 85vh; overflow-y: auto; position: relative; border: 1px solid var(--rosa-medio); box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
@@ -243,8 +231,6 @@
     <script>
         const api = 'https://sheetdb.io/api/v1/f7a2fgi064wzu';
         let products = [];
-        
-        // Estado Global
         let filterCategory = '';
         let filterSubCategory = '';
         let filterBrand = '';
@@ -253,15 +239,10 @@
 
         const getVal = (item, key) => item[key] || item[key + ' '] || '';
 
-        // 👑 FUNCIÓN V2.6: AJUSTADA CON API DIRECTA DE WHATSAPP PARA EVITAR ERROR DE EMOJIS EN INSTAGRAM
         function generateWaLink(item) {
-            // El .trim() elimina automáticamente cualquier espacio invisible al inicio o al final
             const nombre = getVal(item, 'Nombre').trim();
             const precio = getVal(item, 'Precio Venta').trim();
-            
             const textoMensaje = `Hola Bloome Beauty! 🌸\n\nMe interesa el siguiente producto:\n\n🛍️ *${nombre}*\n💰 Precio: ${precio}\n\n¡¿Está disponible?! ✨`;
-            
-            // USAMOS EL LINK DIRECTO DE LA API PARA EVITAR QUE EL INTERNO DE INSTAGRAM ROMPA LOS EMOJIS
             return `https://api.whatsapp.com/send?phone=573160570546&text=${encodeURIComponent(textoMensaje)}`;
         }
 
@@ -269,205 +250,53 @@
             try {
                 const res = await fetch(api);
                 const rawData = await res.json();
-                
                 if (Array.isArray(rawData)) {
-                    // 🔥 NUEVO FILTRO DE STOCK: Excluimos lo que diga "agotado" ANTES de guardar en products
-                    const productosDisponibles = rawData.filter(item => {
-                        const stock = getVal(item, 'Stock').toLowerCase().trim();
-                        return stock !== 'agotado'; 
-                    });
-
-                    products = productosDisponibles;
-                    
-                    products.sort((a, b) => {
-                        const catA = (getVal(a, 'Categoría') || '').trim().toLowerCase();
-                        const catB = (getVal(b, 'Categoría') || '').trim().toLowerCase();
-                        return catA.localeCompare(catB);
-                    });
-                } else {
-                    products = [];
+                    products = rawData.filter(item => getVal(item, 'Stock').toLowerCase().trim() !== 'agotado');
+                    products.sort((a, b) => (getVal(a, 'Categoría') || '').trim().toLowerCase().localeCompare((getVal(b, 'Categoría') || '').trim().toLowerCase()));
                 }
-
                 buildBrandDropdown();
                 buildAccordionMenu();
                 applyFilters();
             } catch (error) {
-                console.error(error);
                 document.getElementById('catalog').innerText = "Error cargando productos. Por favor reintenta.";
             }
         }
 
-        // --- MANEJO DE COMPONENTES DE NAVEGACIÓN ---
-        function toggleDrawer(open) {
-            document.getElementById('drawerMenu').classList.toggle('active', open);
-            document.getElementById('drawerOverlay').classList.toggle('active', open);
-        }
+        function toggleDrawer(open) { document.getElementById('drawerMenu').classList.toggle('active', open); document.getElementById('drawerOverlay').classList.toggle('active', open); }
+        function toggleSearch(open) { const modal = document.getElementById('searchModal'); modal.classList.toggle('active', open); if (open) { document.getElementById('searchInput').value = ''; document.getElementById('searchInput').focus(); document.getElementById('predictiveBox').innerHTML = ''; } }
 
-        function toggleSearch(open) {
-            const modal = document.getElementById('searchModal');
-            modal.classList.toggle('active', open);
-            if (open) {
-                const input = document.getElementById('searchInput');
-                input.value = '';
-                input.focus();
-                document.getElementById('predictiveBox').innerHTML = '';
-            }
-        }
+        function buildBrandDropdown() { const marcas = [...new Set(products.flatMap(p => getVal(p, 'Marca').split(',').map(s => s.trim())))].filter(v => v).sort(); document.getElementById('filterMarca').innerHTML = '<option value="">Todas las marcas</option>' + marcas.map(m => `<option value="${m}">${m}</option>`).join(''); }
+        function onBrandChange() { filterBrand = document.getElementById('filterMarca').value; currentPage = 1; applyFilters(); toggleDrawer(false); }
+        function buildAccordionMenu() { const container = document.getElementById('accordion-container'); const cats = [...new Set(products.flatMap(p => getVal(p, 'Categoría').split(',').map(s => s.trim())))].filter(v => v).sort(); let html = '<div class="accordion-item"><button class="accordion-trigger" onclick="selectCategory(\'\', \'\')">✨ Ver todo el catálogo</button></div>'; cats.forEach(cat => { const subs = [...new Set(products.filter(p => getVal(p, 'Categoría').split(',').map(s => s.trim()).includes(cat)).flatMap(p => getVal(p, 'SubCategoria').split(',').map(s => s.trim())))].filter(v => v).sort(); html += `<div class="accordion-item"><button class="accordion-trigger" onclick="toggleAccordion(this, '${cat}')"><span>${cat}</span><span class="icon">${subs.length ? '+' : '➔'}</span></button><div class="accordion-content"><button class="subcat-btn" onclick="selectCategory('${cat}', '')">📍 Todo en ${cat}</button>${subs.map(sub => `<button class="subcat-btn" onclick="selectCategory('${cat}', '${sub}')">🌸 ${sub}</button>`).join('')}</div></div>`; }); container.innerHTML = html; }
+        function toggleAccordion(btn, cat) { const content = btn.nextElementSibling; const icon = btn.querySelector('.icon'); if (content && content.classList.contains('accordion-content')) { const isVisible = content.style.display === 'block'; content.style.display = isVisible ? 'none' : 'block'; icon.innerText = isVisible ? '+' : '−'; if(isVisible) return; } if (!content || content.children.length <= 1) selectCategory(cat, ''); }
+        function selectCategory(cat, sub) { filterCategory = cat; filterSubCategory = sub; currentPage = 1; applyFilters(); toggleDrawer(false); }
 
-        // --- CONSTRUCCIÓN DEL MENÚ DE ACORDEÓN ---
-        function buildBrandDropdown() {
-            const marcas = [...new Set(products.flatMap(p => getVal(p, 'Marca').split(',').map(s => s.trim())))].filter(v => v).sort();
-            document.getElementById('filterMarca').innerHTML = '<option value="">Todas las marcas</option>' + marcas.map(m => `<option value="${m}">${m}</option>`).join('');
-        }
-
-        function onBrandChange() {
-            filterBrand = document.getElementById('filterMarca').value;
-            currentPage = 1;
-            applyFilters();
-            toggleDrawer(false);
-        }
-
-        function buildAccordionMenu() {
-            const container = document.getElementById('accordion-container');
-            const cats = [...new Set(products.flatMap(p => getVal(p, 'Categoría').split(',').map(s => s.trim())))].filter(v => v).sort();
-            
-            let html = `
-                <div class="accordion-item">
-                    <button class="accordion-trigger" onclick="selectCategory('', '')">✨ Ver todo el catálogo</button>
-                </div>
-            `;
-
-            cats.forEach((cat) => {
-                const subs = [...new Set(products.filter(p => getVal(p, 'Categoría').split(',').map(s => s.trim()).includes(cat)).flatMap(p => getVal(p, 'SubCategoria').split(',').map(s => s.trim())))].filter(v => v).sort();
-                
-                html += `
-                    <div class="accordion-item">
-                        <button class="accordion-trigger" onclick="toggleAccordion(this, '${cat}')">
-                            <span>${cat}</span>
-                            <span class="icon">${subs.length ? '+' : '➔'}</span>
-                        </button>
-                        <div class="accordion-content">
-                            <button class="subcat-btn" onclick="selectCategory('${cat}', '')">📍 Todo en ${cat}</button>
-                            ${subs.map(sub => `<button class="subcat-btn" onclick="selectCategory('${cat}', '${sub}')">🌸 ${sub}</button>`).join('')}
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        function toggleAccordion(btn, cat) {
-            const content = btn.nextElementSibling;
-            const icon = btn.querySelector('.icon');
-            
-            if (content && content.classList.contains('accordion-content')) {
-                const isVisible = content.style.display === 'block';
-                content.style.display = isVisible ? 'none' : 'block';
-                icon.innerText = isVisible ? '+' : '−';
-                if(isVisible) return; 
-            }
-            if (!content || content.children.length <= 1) {
-                selectCategory(cat, '');
-            }
-        }
-
-        function selectCategory(cat, sub) {
-            filterCategory = cat;
-            filterSubCategory = sub;
-            currentPage = 1;
-            applyFilters();
-            toggleDrawer(false);
-        }
-
-        // --- 🔍 BUSQUEDA PREDICTIVA ---
         function handlePredictiveSearch() {
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
             const box = document.getElementById('predictiveBox');
             if (!query) { box.innerHTML = ''; return; }
-
             const filtered = products.filter(p => getVal(p, 'Nombre').toLowerCase().includes(query)).slice(0, 6);
-            
-            if (filtered.length === 0) {
-                box.innerHTML = '<div style="padding:15px; color:#757575; font-size:0.9em; text-align:center;">No encontramos coincidencias...</div>';
-                return;
-            }
-
-            box.innerHTML = filtered.map(item => {
-                const idx = products.indexOf(item);
-                // MEJORA 2: Atributo loading="lazy" añadido en la búsqueda
-                return `
-                    <div class="predictive-item" onclick="openPredictiveProduct(${idx})">
-                        <img class="predictive-thumb" loading="lazy" src="${getVal(item, 'Imagen 1') || 'https://via.placeholder.com/150'}" onerror="this.src='https://via.placeholder.com/150'">
-                        <div class="predictive-info">
-                            <h4>${getVal(item, 'Nombre')}</h4>
-                            <span>${getVal(item, 'Precio Venta')}</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+            box.innerHTML = filtered.length === 0 ? '<div style="padding:15px; color:#757575; font-size:0.9em; text-align:center;">No encontramos coincidencias...</div>' : filtered.map(item => `<div class="predictive-item" onclick="openModal(${products.indexOf(item)}); toggleSearch(false);"><img class="predictive-thumb" loading="lazy" src="${getVal(item, 'Imagen 1') || 'https://via.placeholder.com/150'}"><div class="predictive-info"><h4>${getVal(item, 'Nombre')}</h4><span>${getVal(item, 'Precio Venta')}</span></div></div>`).join('');
         }
 
-        function openPredictiveProduct(index) {
-            toggleSearch(false);
-            openModal(index);
-        }
-
-        // --- ⚙️ APLICACIÓN CENTRAL DE FILTROS ---
         function applyFilters() {
-            const filtered = products.filter(p => {
-                const matchBrand = !filterBrand || getVal(p, 'Marca').split(',').map(s => s.trim()).includes(filterBrand);
-                const matchCat = !filterCategory || getVal(p, 'Categoría').split(',').map(s => s.trim()).includes(filterCategory);
-                const matchSub = !filterSubCategory || getVal(p, 'SubCategoria').split(',').map(s => s.trim()).includes(filterSubCategory);
-                return matchBrand && matchCat && matchSub;
-            });
-
-            let label = "Todos los Productos";
-            if (filterCategory) label = filterCategory;
-            if (filterSubCategory) label += ` › ${filterSubCategory}`;
-            if (filterBrand) label += ` (${filterBrand})`;
-            document.getElementById('activeFilterLabel').innerText = label;
-
-            const totalItems = filtered.length;
-            const start = (currentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const paginatedItems = filtered.slice(start, end);
-
+            const filtered = products.filter(p => (!filterBrand || getVal(p, 'Marca').split(',').map(s => s.trim()).includes(filterBrand)) && (!filterCategory || getVal(p, 'Categoría').split(',').map(s => s.trim()).includes(filterCategory)) && (!filterSubCategory || getVal(p, 'SubCategoria').split(',').map(s => s.trim()).includes(filterSubCategory)));
+            let label = "Todos los Productos"; if (filterCategory) label = filterCategory; if (filterSubCategory) label += ` › ${filterSubCategory}`; if (filterBrand) label += ` (${filterBrand})`; document.getElementById('activeFilterLabel').innerText = label;
+            const paginatedItems = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
             renderCatalog(paginatedItems);
-            renderPaginationControls(totalItems);
+            renderPaginationControls(filtered.length);
         }
 
         function renderCatalog(data) {
             const catalog = document.getElementById('catalog');
-            if (data.length === 0) {
-                catalog.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:#757575;">No hay productos en esta selección.</div>';
-                return;
-            }
-
-            catalog.innerHTML = data.map(item => {
+            catalog.innerHTML = data.length === 0 ? '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:#757575;">No hay productos en esta selección.</div>' : data.map((item, index) => {
                 const globalIndex = products.indexOf(item);
+                const isPriority = index < 4;
                 const imgs = [getVal(item, 'Imagen 1'), getVal(item, 'Imagen 2'), getVal(item, 'Imagen 3')].filter(i => i && i.trim() !== "");
-                const arrowsDisplay = imgs.length > 1 ? 'style="display: flex;"' : 'style="display: none;"';
-                const dotsHtml = imgs.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}"></span>`).join('');
-
-                // MEJORA 2: Atributo loading="lazy" añadido en el catálogo principal
                 return `
                     <div class="card" onclick="openModal(${globalIndex})">
-                        <div class="img-container" 
-                             ontouchstart="cardTouchStart(event, this)" 
-                             ontouchend="cardTouchEnd(event, this)">
-                            <button class="carousel-btn prev" ${arrowsDisplay} onclick="changeImage(event, this, -1)">&#10094;</button>
-                            <img class="product-img" loading="lazy" src="${imgs[0] || 'https://via.placeholder.com/200'}" onerror="this.src='https://via.placeholder.com/200'" data-images="${imgs.join(',')}" data-index="0">
-                            <button class="carousel-btn next" ${arrowsDisplay} onclick="changeImage(event, this, 1)">&#10095;</button>
-                            <div class="carousel-dots">${dotsHtml}</div>
-                        </div>
-                        <div class="card-meta">
-                            <div>
-                                <h3>${getVal(item, 'Nombre')}</h3>
-                                <div class="price">${getVal(item, 'Precio Venta')}</div>
-                                <div class="tono-container">${getVal(item, 'Tonos Disponibles').split(',').map(t => t.trim() ? `<span class="tono-tag">${t.trim()}</span>` : '').join('')}</div>
-                            </div>
-                            <a href="${generateWaLink(item)}" class="btn-wa" target="_blank" onclick="event.stopPropagation()">Pedir</a>
-                        </div>
+                        <div class="img-container"><button class="carousel-btn prev" ${imgs.length > 1 ? 'style="display: flex;"' : ''} onclick="changeImage(event, this, -1)">&#10094;</button><img class="product-img" ${isPriority ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="${isPriority ? 'sync' : 'async'}" src="${imgs[0] || 'https://via.placeholder.com/200'}" data-images="${imgs.join(',')}" data-index="0"><button class="carousel-btn next" ${imgs.length > 1 ? 'style="display: flex;"' : ''} onclick="changeImage(event, this, 1)">&#10095;</button><div class="carousel-dots">${imgs.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}"></span>`).join('')}</div></div>
+                        <div class="card-meta"><div><h3>${getVal(item, 'Nombre')}</h3><div class="price">${getVal(item, 'Precio Venta')}</div><div class="tono-container">${getVal(item, 'Tonos Disponibles').split(',').map(t => t.trim() ? `<span class="tono-tag">${t.trim()}</span>` : '').join('')}</div></div><a href="${generateWaLink(item)}" class="btn-wa" target="_blank" onclick="event.stopPropagation()">Pedir</a></div>
                     </div>
                 `;
             }).join('');
@@ -480,29 +309,17 @@
             const dots = container.querySelectorAll('.dot');
             const images = img.dataset.images.split(',');
             let currentIndex = parseInt(img.dataset.index) + direction;
-
-            if (currentIndex >= images.length) currentIndex = 0;
-            if (currentIndex < 0) currentIndex = images.length - 1;
-
+            if (currentIndex >= images.length) currentIndex = 0; if (currentIndex < 0) currentIndex = images.length - 1;
             img.style.opacity = 0.3;
-            setTimeout(() => {
-                img.src = images[currentIndex];
-                img.dataset.index = currentIndex;
-                img.style.opacity = 1;
-                dots.forEach((dot, idx) => dot.classList.toggle('active', idx === currentIndex));
-            }, 100);
+            setTimeout(() => { img.src = images[currentIndex]; img.dataset.index = currentIndex; img.style.opacity = 1; dots.forEach((dot, idx) => dot.classList.toggle('active', idx === currentIndex)); }, 100);
         }
 
-        let touchXStart = 0;
-        function cardTouchStart(e, container) { touchXStart = e.touches[0].clientX; }
+        function cardTouchStart(e, container) { this.touchXStart = e.touches[0].clientX; }
         function cardTouchEnd(e, container) {
-            const touchXEnd = e.changedTouches[0].clientX;
-            const diffX = touchXStart - touchXEnd;
-            const prevBtn = container.querySelector('.carousel-btn.prev');
-            const nextBtn = container.querySelector('.carousel-btn.next');
+            const diffX = this.touchXStart - e.changedTouches[0].clientX;
             if (Math.abs(diffX) > 40) {
-                if (diffX > 0 && nextBtn.style.display !== 'none') changeImage(null, nextBtn, 1);
-                else if (diffX < 0 && prevBtn.style.display !== 'none') changeImage(null, prevBtn, -1);
+                const btn = diffX > 0 ? container.querySelector('.carousel-btn.next') : container.querySelector('.carousel-btn.prev');
+                if (btn.style.display !== 'none') changeImage(null, btn, diffX > 0 ? 1 : -1);
             }
         }
 
@@ -510,57 +327,27 @@
             const container = document.getElementById('pagination');
             const totalPages = Math.ceil(totalItems / itemsPerPage);
             if (totalPages <= 1) { container.innerHTML = ''; return; }
-
             let html = `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(-1)">◀</button>`;
-            for(let i = 1; i <= totalPages; i++) {
-                if(i === 1 || i === totalPages || Math.abs(currentPage - i) <= 1) {
-                    html += `<button class="page-btn ${currentPage === i ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
-                } else if (i === currentPage - 2 || i === currentPage + 2) {
-                    html += `<span style="color:var(--rosa-medio)">...</span>`;
-                }
-            }
-            html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(1)">▶</button>`;
-            container.innerHTML = html;
+            for(let i = 1; i <= totalPages; i++) if(i === 1 || i === totalPages || Math.abs(currentPage - i) <= 1) html += `<button class="page-btn ${currentPage === i ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`; else if (i === currentPage - 2 || i === currentPage + 2) html += `<span style="color:var(--rosa-medio)">...</span>`;
+            html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(1)">▶</button>`; container.innerHTML = html;
         }
 
-        function changePage(step) {
-            currentPage += step;
-            applyFilters();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        function goToPage(pageNum) {
-            currentPage = pageNum;
-            applyFilters();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        function changePage(step) { currentPage += step; applyFilters(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function goToPage(pageNum) { currentPage = pageNum; applyFilters(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
-        // --- 🎭 MANEJO DE VENTANA MODAL ---
         function openModal(index) {
             const item = products[index];
-            const modalBody = document.getElementById('modal-body');
             const imgs = [getVal(item, 'Imagen 1'), getVal(item, 'Imagen 2'), getVal(item, 'Imagen 3')].filter(i => i && i.trim() !== "");
-            const arrowsDisplay = imgs.length > 1 ? 'style="display: flex;"' : 'style="display: none;"';
-            const dotsHtml = imgs.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}"></span>`).join('');
-            
             const descSheet = getVal(item, 'Descripción') || getVal(item, 'Descripcion');
-            let descFinal = descSheet && descSheet.trim() !== "" ? descSheet : "Este grandioso producto no cuenta con descripción detallada todavía.";
-
-            // MEJORA 3: Reemplazar los saltos de línea (\n) por etiquetas <br> para respetar los párrafos de Google Sheets
-            descFinal = descFinal.replace(/\n/g, '<br>');
-
-            modalBody.innerHTML = `
-                <div class="img-container" style="aspect-ratio:4/3; margin-bottom: 15px;" 
-                     ontouchstart="cardTouchStart(event, this)" ontouchend="cardTouchEnd(event, this)">
-                    <button class="carousel-btn prev" ${arrowsDisplay} onclick="changeImage(event, this, -1)">&#10094;</button>
-                    <img class="product-img" loading="lazy" src="${imgs[0] || 'https://via.placeholder.com/200'}" onerror="this.src='https://via.placeholder.com/200'" data-images="${imgs.join(',')}" data-index="0" style="object-fit: contain;">
-                    <button class="carousel-btn next" ${arrowsDisplay} onclick="changeImage(event, this, 1)">&#10095;</button>
-                    <div class="carousel-dots">${dotsHtml}</div>
-                </div>
+            const descFinal = descSheet && descSheet.trim() !== "" ? `<div class="modal-desc"><strong>Descripción del producto:</strong><br>${descSheet.trim().replace(/\n/g, '<br>')}</div>` : "";
+            
+            document.getElementById('modal-body').innerHTML = `
+                <div class="img-container" style="aspect-ratio:4/3; margin-bottom: 15px;"><button class="carousel-btn prev" ${imgs.length > 1 ? 'style="display: flex;"' : ''} onclick="changeImage(event, this, -1)">&#10094;</button><img class="product-img" src="${imgs[0] || 'https://via.placeholder.com/200'}" data-images="${imgs.join(',')}" data-index="0" style="object-fit: contain;"><button class="carousel-btn next" ${imgs.length > 1 ? 'style="display: flex;"' : ''} onclick="changeImage(event, this, 1)">&#10095;</button><div class="carousel-dots">${imgs.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}"></span>`).join('')}</div></div>
                 <div style="font-size: 0.75em; color: var(--rosa-fuerte); text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 4px;">${getVal(item, 'Marca')}</div>
                 <h2 style="color: var(--texto); margin: 0 0 8px 0; font-size: 1.3em; font-weight:600;">${getVal(item, 'Nombre')}</h2>
                 <div class="price" style="font-size: 1.25em; margin-bottom: 10px;">${getVal(item, 'Precio Venta')}</div>
                 <div style="margin-bottom: 15px;">${getVal(item, 'Tonos Disponibles').split(',').map(t => t.trim() ? `<span class="tono-tag" style="font-size:0.75em">${t.trim()}</span>` : '').join('')}</div>
-                <div class="modal-desc"><strong>Descripción del producto:</strong><br>${descFinal}</div>
+                ${descFinal}
                 <a href="${generateWaLink(item)}" class="btn-wa" target="_blank" style="padding:12px; font-size:0.95em;">Pedir por WhatsApp</a>
             `;
             document.getElementById('product-modal').classList.add('active');
